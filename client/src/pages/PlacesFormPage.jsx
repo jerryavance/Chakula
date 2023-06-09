@@ -64,13 +64,13 @@ export default function PlacesFormPage() {
     };
     if (id) {
       // update
-      await axios.put('/places', {
+      await axios.put('/api/places', {
         id, ...placeData
       });
       setRedirect(true);
     } else {
       // new place
-      await axios.post('/places', placeData);
+      await axios.post('/api/places', placeData);
       setRedirect(true);
     }
 
@@ -84,31 +84,31 @@ export default function PlacesFormPage() {
     <div>
       <AccountNav />
       <form onSubmit={savePlace}>
-        {preInput('Title', 'Title for your place. should be short and catchy as in advertisement')}
-        <input type="text" value={title} onChange={ev => setTitle(ev.target.value)} placeholder="title, for example: My lovely apt"/>
-        {preInput('Address', 'Address to this place')}
+        {preInput('Name', 'Name of the restaurant')}
+        <input type="text" value={title} onChange={ev => setTitle(ev.target.value)} placeholder="name, for example: Cafe-Javas"/>
+        {preInput('Address', 'Address of restaurant')}
         <input type="text" value={address} onChange={ev => setAddress(ev.target.value)}placeholder="address"/>
         {preInput('Photos','more = better')}
         <PhotosUploader addedPhotos={addedPhotos} onChange={setAddedPhotos} />
-        {preInput('Description','description of the place')}
+        {preInput('Description','description of the restaurant')}
         <textarea value={description} onChange={ev => setDescription(ev.target.value)} />
-        {preInput('Perks','select all the perks of your place')}
+        {preInput('Perks','select all the perks of the restaurant')}
         <div className="grid mt-2 gap-2 grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
           <Perks selected={perks} onChange={setPerks} />
         </div>
-        {preInput('Extra info','house rules, etc')}
+        {preInput('Extra info','special meals and offers, etc')}
         <textarea value={extraInfo} onChange={ev => setExtraInfo(ev.target.value)} />
-        {preInput('Check in&out times','add check in and out times, remember to have some time window for cleaning the room between guests')}
+        {preInput('Group guests dinning check in & out times')}
         <div className="grid gap-2 grid-cols-2 md:grid-cols-4">
           <div>
-            <h3 className="mt-2 -mb-1">Check in time</h3>
+            <h3 className="mt-2 -mb-1">Dinning check in time</h3>
             <input type="text"
                    value={checkIn}
                    onChange={ev => setCheckIn(ev.target.value)}
                    placeholder="14"/>
           </div>
           <div>
-            <h3 className="mt-2 -mb-1">Check out time</h3>
+            <h3 className="mt-2 -mb-1">Dinning check out time</h3>
             <input type="text"
                    value={checkOut}
                    onChange={ev => setCheckOut(ev.target.value)}
@@ -120,7 +120,7 @@ export default function PlacesFormPage() {
                    onChange={ev => setMaxGuests(ev.target.value)}/>
           </div>
           <div>
-            <h3 className="mt-2 -mb-1">Price per night</h3>
+            <h3 className="mt-2 -mb-1">Price per full course meal</h3>
             <input type="number" value={price}
                    onChange={ev => setPrice(ev.target.value)}/>
           </div>

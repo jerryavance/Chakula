@@ -25,7 +25,7 @@ export default function BookingWidget({place}) {
   }
 
   async function bookThisPlace() {
-    const response = await axios.post('/bookings', {
+    const response = await axios.post('/api/bookings', {
       checkIn,checkOut,numberOfGuests,name,phone,
       place:place._id,
       price:numberOfNights * place.price,
@@ -41,7 +41,7 @@ export default function BookingWidget({place}) {
   return (
     <div className="bg-white shadow p-4 rounded-2xl">
       <div className="text-2xl text-center">
-        Price: ${place.price} / per night
+        Price: ${place.price} / per meal
       </div>
       <div className="border rounded-2xl mt-4">
         <div className="flex">
@@ -58,7 +58,7 @@ export default function BookingWidget({place}) {
           </div>
         </div>
         <div className="py-3 px-4 border-t">
-          <label>Number of guests:</label>
+          <label>Number of dinning guests:</label>
           <input type="number"
                  value={numberOfGuests}
                  onChange={ev => setNumberOfGuests(ev.target.value)}/>
@@ -77,7 +77,7 @@ export default function BookingWidget({place}) {
         )}
       </div>
       <button onClick={bookThisPlace} className="primary mt-4">
-        Book this place
+        Book a table
         {numberOfNights > 0 && (
           <span> ${numberOfNights * place.price}</span>
         )}

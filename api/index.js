@@ -12,6 +12,7 @@ const {S3Client, PutObjectCommand} = require('@aws-sdk/client-s3');
 const multer = require('multer');
 const fs = require('fs');
 const mime = require('mime-types');
+const path = require('path');
 
 require('dotenv').config();
 const app = express();
@@ -28,6 +29,22 @@ app.use(cors({
   origin: 'http://localhost:5173'  //'http://127.0.0.1:5173', //add origin of frontend app
 }));
 
+
+///upload to local path
+async function uploadToS3(filePath, originalFilename, mimetype) {
+  const parts = originalFilename.split('.');
+  const ext = parts[parts.length - 1];
+  const newFilename = Date.now() + '.' + ext;
+  const destinationPath = path.join(__dirname, 'uploads', newFilename);
+
+  await fs.promises.rename(filePath, destinationPath);
+  
+  return `http://localhost:4000/uploads/${newFilename}`;
+}
+
+///end 
+
+/*
 async function uploadToS3(path, originalFilename, mimetype) {
   const client = new S3Client({
     region: 'us-east-1',
@@ -48,6 +65,7 @@ async function uploadToS3(path, originalFilename, mimetype) {
   }));
   return `https://${bucket}.s3.amazonaws.com/${newFilename}`;
 }
+*/
 
 function getUserDataFromReq(req) {
   return new Promise((resolve, reject) => {
@@ -132,6 +150,7 @@ app.post('/api/upload-by-link', async (req,res) => {
   res.json(url);
 });
 
+/*
 const photosMiddleware = multer({dest:'/tmp'});
 app.post('/api/upload', photosMiddleware.array('photos', 100), async (req,res) => {
   const uploadedFiles = [];
@@ -142,6 +161,22 @@ app.post('/api/upload', photosMiddleware.array('photos', 100), async (req,res) =
   }
   res.json(uploadedFiles);
 });
+*/
+
+/// wild 2
+const photosMiddleware = multer({ dest: '/tmp' });
+app.post('/api/upload', photosMiddleware.array('photos', 100), async (req, res) => {
+  const uploadedFiles = [];
+  for (let i = 0; i < req.files.length; i++) {
+    const { path, originalname, mimetype } = req.files[i];
+    const url = await uploadToS3(path, originalname, mimetype);
+    uploadedFiles.push(url);
+  }
+  res.json(uploadedFiles);
+});
+
+/// wild 2
+
 
 app.post('/api/places', (req,res) => {
   mongoose.connect(process.env.MONGO_URL);
